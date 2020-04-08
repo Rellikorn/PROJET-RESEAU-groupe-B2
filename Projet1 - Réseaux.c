@@ -10,7 +10,12 @@
 #define PORT IPPORT_USERRESERVED // = 5000
 #define LG_MESSAGE 256
 
-
+typedef struct pollfd
+{
+	int fd; // file descriptor
+	short event; // requested events
+	short revents // returned events
+}pollfd;
 
 int main(int argc, char const *argv[])
 {
