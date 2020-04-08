@@ -26,8 +26,8 @@ int main(int argc, char const *argv[])
 	int socketDialogue;
 	struct sockaddr_in pointDeRencontreDistant;
 	char messageEnvoi[LG_MESSAGE]; // le message de la couche Application !
-	char messageRecu[LG_MESSAGE]; /* le message de la couche Application ! */
-	int ecrits, lus; /* nb d’octets ecrits et lus */
+	char messageRecu[LG_MESSAGE]; // le message de la couche Application !
+	int ecrits, lus; // nb d’octets ecrits et lus
 	int retour;
 
 	// Crée un socket de communication
