@@ -35,7 +35,7 @@ int main(int argc, char const *argv[])
 	/* 0 indique que l’on utilisera le protocole par défaut associé à SOCK_STREAM soit TCP */
 	
 	// Teste la valeur renvoyée par l’appel système
-	socket()
+	socket();
 
 	if(socketEcoute < 0) /* échec ? */
 	{
@@ -62,7 +62,7 @@ int main(int argc, char const *argv[])
 	}
 
 	printf("Socket attachée avec succès !\n");
-	// On fixe la taille de la file d’attente à 5 (pour les demandes de connexion non encoretraitées)
+	// On fixe la taille de la file d’attente à 5 (pour les demandes de connexion non encore traitées)
 	if(listen(socketEcoute, 5) < 0)
 	{
 		perror("listen");
