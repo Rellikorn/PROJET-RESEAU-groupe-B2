@@ -132,3 +132,40 @@ int main(int argc, char const *argv[])
 	close(socketEcoute);
 	return 0;
 }
+
+void motClient(mot)
+{
+	if (mot == !login) // à finir
+	{
+		printf("Ancien login : %s\n", );
+		printf("Nouveau login : ");
+		scanf("%s%*[&]\n\n", &);
+
+		printf("Bonjour %s\n", );
+
+		systeme("clear");
+	}
+
+	else if (mot == !help)
+	{
+		printf("Liste des fonctions :\n");
+		printf("  -  !login -> modifier son login\n");
+		printf("  -  !help -> \n");
+		printf("  -  !list -> liste des actions possibles\n");
+		printf("  -  !msg -> envoyer un message\n");
+		printf("  -  !exit -> déconnexion\n");
+	}
+
+	else if (mot == !list)
+	{
+		printf("%s\n", );
+	}
+
+	else if (mot == !msg)
+	{
+		//
+	}
+
+	else
+		exit();
+}
