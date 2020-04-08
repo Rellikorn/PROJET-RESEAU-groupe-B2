@@ -74,6 +74,7 @@ int main(int argc, char const *argv[])
 		printf("Attente d’une demande de connexion (quitter avec Ctrl-C)\n\n");
 		// c’est un appel bloquant
 		socketDialogue = accept(socketEcoute, (struct sockaddr *)&pointDeRencontreDistant, & longueurAdresse);
+
 		if (socketDialogue < 0)
 		{
 			perror("accept");
@@ -81,6 +82,7 @@ int main(int argc, char const *argv[])
 			close(socketEcoute);
 			exit(-4);
 		}
+
 		// On réceptionne les données du client (cf. protocole)
 		lus = read(socketDialogue, messageRecu, LG_MESSAGE*sizeof(char));
 		// ici appel bloquant
@@ -117,7 +119,7 @@ int main(int argc, char const *argv[])
 				printf("Message %s envoyé (%d octets)\n\n", messageEnvoi, ecrits);
 		}
 
-		// On ferme la socket de dialogue et on se replace en attente ...
+		// On ferme la socket de dialogue et on se replace en attente...
 		close(socketDialogue);
 	}
 
