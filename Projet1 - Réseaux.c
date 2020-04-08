@@ -57,7 +57,12 @@ int main(int argc, char const *argv[])
 	}
 
 	printf("Socket attachée avec succès !\n");
-	// On fixe la taille de la file d’attente à 5 (pour les demandes de connexion non encoretraitées) if(listen(socketEcoute, 5) < 0) { perror("listen"); exit(-3); }
+	// On fixe la taille de la file d’attente à 5 (pour les demandes de connexion non encoretraitées)
+	if(listen(socketEcoute, 5) < 0)
+	{
+		perror("listen");
+		exit(-3);
+	}
 	
 	printf("Socket placée en écoute passive ...\n");
 	// boucle d’attente de connexion : en théorie, un serveur attend indéfiniment !
@@ -111,7 +116,7 @@ int main(int argc, char const *argv[])
 			default: /* envoi de n octets */
 				printf("Message %s envoyé (%d octets)\n\n", messageEnvoi, ecrits);
 		}
-		
+
 		// On ferme la socket de dialogue et on se replace en attente ...
 		close(socketDialogue);
 	}
