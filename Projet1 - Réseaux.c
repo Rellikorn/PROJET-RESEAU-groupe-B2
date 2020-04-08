@@ -1,11 +1,11 @@
 #include <stdio.h>
-#include <stdlib.h> /* pour exit */
+#include <stdlib.h> // pour exit
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <string.h> /* pour memset */
-#include <netinet/in.h> /* pour struct sockaddr_in */
-#include <arpa/inet.h> /* pour htons et inet_aton */
-#include <unistd.h> /* pour sleep */
+#include <string.h> // pour memset
+#include <netinet/in.h> // pour struct sockaddr_in
+#include <arpa/inet.h> // pour htons et inet_aton
+#include <unistd.h> // pour sleep
 
 #define PORT IPPORT_USERRESERVED // = 5000
 #define LG_MESSAGE 256
@@ -25,7 +25,7 @@ int main(int argc, char const *argv[])
 	socklen_t longueurAdresse;
 	int socketDialogue;
 	struct sockaddr_in pointDeRencontreDistant;
-	char messageEnvoi[LG_MESSAGE]; /* le message de la couche Application ! */
+	char messageEnvoi[LG_MESSAGE]; // le message de la couche Application !
 	char messageRecu[LG_MESSAGE]; /* le message de la couche Application ! */
 	int ecrits, lus; /* nb d’octets ecrits et lus */
 	int retour;
