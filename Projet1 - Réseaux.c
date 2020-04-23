@@ -23,21 +23,23 @@ int main(int argc, char const *argv[])
 	struct sockaddr_in pointDeRencontreLocal;
 
 	socklen_t longueurAdresse;
+	
 	int socketDialogue;
 	struct sockaddr_in pointDeRencontreDistant;
 	char messageEnvoi[LG_MESSAGE]; // le message de la couche Application !
 	char messageRecu[LG_MESSAGE]; // le message de la couche Application !
+	
 	int ecrits, lus; // nb d’octets ecrits et lus
 	int retour;
 
 	// Crée un socket de communication
 	socketEcoute = socket(PF_INET, SOCK_STREAM, 0);
-	/* 0 indique que l’on utilisera le protocole par défaut associé à SOCK_STREAM soit TCP */
+	// 0 indique que l’on utilisera le protocole par défaut associé à SOCK_STREAM soit TCP
 	
 	// Teste la valeur renvoyée par l’appel système
 	socket();
 
-	if(socketEcoute < 0) /* échec ? */
+	if(socketEcoute < 0) // échec ?
 	{
 		perror("socket"); // Affiche le message d’erreur
 		exit(-1); // On sort en indiquant un code erreur
@@ -62,6 +64,7 @@ int main(int argc, char const *argv[])
 	}
 
 	printf("Socket attachée avec succès !\n");
+
 	// On fixe la taille de la file d’attente à 5 (pour les demandes de connexion non encore traitées)
 	if(listen(socketEcoute, 5) < 0)
 	{
@@ -76,7 +79,9 @@ int main(int argc, char const *argv[])
 	{
 		memset(messageEnvoi, 0x00, LG_MESSAGE*sizeof(char));
 		memset(messageRecu, 0x00, LG_MESSAGE*sizeof(char));
+
 		printf("Attente d’une demande de connexion (quitter avec Ctrl-C)\n\n");
+
 		// c’est un appel bloquant
 		socketDialogue = accept(socketEcoute, (struct sockaddr *)&pointDeRencontreDistant, & longueurAdresse);
 
@@ -88,35 +93,35 @@ int main(int argc, char const *argv[])
 			exit(-4);
 		}
 
-		// On réceptionne les données du client (cf. protocole)
+		// On réceptionne les données du client
 		lus = read(socketDialogue, messageRecu, LG_MESSAGE*sizeof(char));
 		// ici appel bloquant
 
 		switch(lus)
 		{
-			case -1 : /* une erreur ! */
+			case -1 : // une erreur !
 				perror("read");
 				close(socketDialogue);
 				exit(-5);
-			case 0 : /* la socket est fermée */
+			case 0 : // la socket est fermée
 				fprintf(stderr, "La socket a été fermée par le client !\n\n");
 				close(socketDialogue);
 				return 0;
-			default: /* réception de n octets */
+			default: // réception de n octets
 				printf("Message reçu : %s (%d octets)\n\n", messageRecu, lus);
 		}
 
-		// On envoie des données vers le client (cf. protocole)
+		// On envoie des données vers le client
 		sprintf(messageEnvoi, "ok\n");
 		ecrits = write(socketDialogue, messageEnvoi, strlen(messageEnvoi));
 		
 		switch(ecrits)
 		{
-			case -1 : /* une erreur ! */
+			case -1 : // une erreur !
 				perror("write");
 				close(socketDialogue)
 				exit(-6);
-			case 0 : /* la socket est fermée */
+			case 0 : // la socket est fermée
 				fprintf(stderr, "La socket a été fermée par le client !\n\n");
 				close(socketDialogue);
 			return 0;
