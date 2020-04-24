@@ -138,7 +138,7 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
-void motClient()
+void motClient(User)
 {
 	if (mot == !login) // à finir
 	{
@@ -171,7 +171,18 @@ void motClient()
 
 	else if (mot == !msg)
 	{
-		//
+		char message[50];
+
+		printf("Entrez votre message :\n");
+		scanf("%s", &message);
+
+		// envoi du message à finir
+
+	}
+
+	else if (mot == !ping)
+	{
+		
 	}
 
 	else
