@@ -9,6 +9,7 @@
 
 #define PORT IPPORT_USERRESERVED // = 5000
 #define LG_MESSAGE 256
+#define LG_LOGIN 50
 
 typedef struct pollfd
 {
@@ -17,6 +18,12 @@ typedef struct pollfd
 	short revents // returned events
 }pollfd;
 
+typedef struct user
+{
+	int socketclient;
+	char login[LG_LOGIN];
+}user;
+ 
 int main(int argc, char const *argv[])
 {
 	int socketEcoute;
