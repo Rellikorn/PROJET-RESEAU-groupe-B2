@@ -138,7 +138,7 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
-void motClient(mot)
+void motClient()
 {
 	if (mot == !login) // à finir
 	{
@@ -154,11 +154,14 @@ void motClient(mot)
 	else if (mot == !help)
 	{
 		printf("Liste des fonctions :\n");
-		printf("  -  !login -> modifier son login\n");
-		printf("  -  !help -> \n");
-		printf("  -  !list -> liste des actions possibles\n");
-		printf("  -  !msg -> envoyer un message\n");
-		printf("  -  !exit -> déconnexion\n");
+		printf("  -  !login   ->   modifier son login\n");
+		printf("  -  !help    ->   liste des actions possibles\n");
+		printf("  -  !ping    ->   pinguer le serveur\n");
+		printf("  -  !list    ->   liste les logins\n");
+		printf("  -  !msg     ->   envoyer un message\n");
+		printf("  -  !serveur ->   affiche l'IP du serveur\n");
+		printf("  -  !port    ->   affiche le port du serveur\n");
+		printf("  -  !exit    ->   déconnexion\n");
 	}
 
 	else if (mot == !list)
