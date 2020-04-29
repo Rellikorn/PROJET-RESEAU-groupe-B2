@@ -44,7 +44,7 @@ int main(int argc, char const *argv[])
 	// 0 indique que l’on utilisera le protocole par défaut associé à SOCK_STREAM soit TCP
 	
 	// Teste la valeur renvoyée par l’appel système
-	socket();
+	socket(PF_INET, SOCK_STREAM, 0);
 
 	if(socketEcoute < 0) // échec ?
 	{
