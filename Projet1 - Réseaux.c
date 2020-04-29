@@ -149,9 +149,9 @@ void motClient(User)
 {
 	if (mot == !login) // à finir
 	{
-		printf("Ancien login : %s\n", );
+		printf("Ancien login : %s\n", User.login);
 		printf("Nouveau login : ");
-		scanf("%s%*[&]\n\n", &);
+		scanf("%s%*[&]\n\n", &User.login);
 
 		printf("Bonjour %s\n", );
 
@@ -178,7 +178,7 @@ void motClient(User)
 
 	else if (mot == !msg)
 	{
-		char message[50];
+		char message[LG_MESSAGE];
 
 		printf("Entrez votre message :\n");
 		scanf("%s", &message);
