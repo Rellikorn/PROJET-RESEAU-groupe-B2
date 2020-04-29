@@ -126,7 +126,7 @@ int main(int argc, char const *argv[])
 		{
 			case -1 : // une erreur !
 				perror("write");
-				close(socketDialogue)
+				close(socketDialogue);
 				exit(-6);
 			case 0 : // la socket est fermée
 				fprintf(stderr, "La socket a été fermée par le client !\n\n");
@@ -145,7 +145,7 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
-void motClient(User)
+void motClient();
 {
 	if (mot == "!login") // à finir
 	{
@@ -183,7 +183,7 @@ void motClient(User)
 		printf("Entrez votre message :\n");
 		scanf("%s", &message);
 
-		ssize_t sendmsg(socketDialogue, message[LG_MESSAGE], MSG_OOB);
+		ssize_t sendmsg(socketDialogue, message, MSG_OOB);
 	}
 
 	else
