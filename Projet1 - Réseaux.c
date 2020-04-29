@@ -145,9 +145,9 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
-void motClient(User)
+void motClient()
 {
-	if (mot == !login) // à finir
+	if (mot == "!login") // à finir
 	{
 		printf("Ancien login : %s\n", User.login);
 		printf("Nouveau login : ");
@@ -158,7 +158,7 @@ void motClient(User)
 		systeme("clear");
 	}
 
-	else if (mot == !help)
+	else if (mot == "!help")
 	{
 		printf("Liste des fonctions :\n");
 		printf("  -  !login   ->   modifier son login\n");
@@ -171,12 +171,12 @@ void motClient(User)
 		printf("  -  !exit    ->   déconnexion\n");
 	}
 
-	else if (mot == !list)
+	else if (mot == "!list")
 	{
 		printf("%s\n", );
 	}
 
-	else if (mot == !msg)
+	else if (mot == "!msg")
 	{
 		char message[LG_MESSAGE];
 
