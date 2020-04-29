@@ -145,7 +145,7 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
-void motClient()
+void motClient(User)
 {
 	if (mot == "!login") // à finir
 	{
@@ -183,7 +183,7 @@ void motClient()
 		printf("Entrez votre message :\n");
 		scanf("%s", &message);
 
-		ssize_t sendmsg(socketDialogue, message[], MSG_OOB);
+		ssize_t sendmsg(socketDialogue, message[LG_MESSAGE], MSG_OOB);
 	}
 
 	else
