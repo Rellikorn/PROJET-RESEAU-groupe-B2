@@ -18,11 +18,11 @@ typedef struct pollfd
 	short revents // returned events
 }pollfd;
 
-typedef struct user
+typedef struct User
 {
 	int socketclient;
 	char login[LG_LOGIN];
-}user;
+}User;
  
 int main(int argc, char const *argv[])
 {
