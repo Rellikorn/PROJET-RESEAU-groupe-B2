@@ -183,13 +183,7 @@ void motClient(User)
 		printf("Entrez votre message :\n");
 		scanf("%s", &message);
 
-		// envoi du message à finir
-
-	}
-
-	else if (mot == !ping)
-	{
-		
+		ssize_t sendmsg(socketDialogue, message[], MSG_OOB);
 	}
 
 	else
