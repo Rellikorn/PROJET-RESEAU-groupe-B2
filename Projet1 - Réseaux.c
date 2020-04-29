@@ -145,7 +145,7 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
-void motClient(User)
+void motClient()
 {
 	if (mot == "!login") // à finir
 	{
