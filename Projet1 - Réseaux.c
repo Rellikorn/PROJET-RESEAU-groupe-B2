@@ -1,15 +1,16 @@
-#include <stdio.h>
-#include <stdlib.h> // pour exit
+#include <stdio.h> // Pour printf()
+#include <stdlib.h> // Pour exit()
+#include <unistd.h> // Pour close() et sleep()
+#include <string.h> // Pour memset()
+#include <poll.h> // Pour poll()
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <string.h> // pour memset
-#include <netinet/in.h> // pour struct sockaddr_in
-#include <arpa/inet.h> // pour htons et inet_aton
-#include <unistd.h> // pour sleep
-
+#include <netinet/in.h> // Pour struct sockaddr_in
+#include <arpa/inet.h> // Pour htons et inet_aton
 #define PORT IPPORT_USERRESERVED // = 5000
 #define LG_MESSAGE 256
 #define LG_LOGIN 50
+#define MAX_USERS 10
 
 typedef struct pollfd
 {
@@ -28,16 +29,17 @@ int main(int argc, char const *argv[])
 {
 	int socketEcoute;
 	struct sockaddr_in pointDeRencontreLocal;
-
 	socklen_t longueurAdresse;
-	
 	int socketDialogue;
 	struct sockaddr_in pointDeRencontreDistant;
 	char messageEnvoi[LG_MESSAGE]; // le message de la couche Application !
 	char messageRecu[LG_MESSAGE]; // le message de la couche Application !
-	
+	User users[MAX_USERS];
+	pollfd pollfds[MAX_USERS + 1];
 	int ecrits, lus; // nb d’octets ecrits et lus
 	int retour;
+
+	memset(users, '\0', MAX_USERS*sizeof(User));
 
 	// Crée un socket de communication
 	socketEcoute = socket(PF_INET, SOCK_STREAM, 0);
@@ -59,7 +61,6 @@ int main(int argc, char const *argv[])
 	memset(&pointDeRencontreLocal, 0x00, longueurAdresse);
 	pointDeRencontreLocal.sin_family = PF_INET;
 	pointDeRencontreLocal.sin_addr.s_addr = htonl(INADDR_ANY);
-
 	// toutes les interfaces locales disponibles
 	pointDeRencontreLocal.sin_port = htons(PORT);
 
