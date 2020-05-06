@@ -5,12 +5,19 @@
 #include <poll.h> // Pour poll()
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <netinet/in.h> // Pour struct sockaddr_in
-#include <arpa/inet.h> // Pour htons et inet_aton
+#include <string.h> // pour memset
+#include <netinet/in.h> // pour struct sockaddr_in
+#include <arpa/inet.h> // pour htons et inet_aton
+#include <unistd.h> // pour sleep
+#include <poll.h> // pour poll()
+
 #define PORT IPPORT_USERRESERVED // = 5000
 #define LG_MESSAGE 256
 #define LG_LOGIN 50
 #define MAX_USERS 10
+#define MAX_LOGIN_SIZE 50
+
+void motClient();
 
 typedef struct pollfd
 {
@@ -85,64 +92,133 @@ int main(int argc, char const *argv[])
 	
 	while(1)
 	{
-		memset(messageEnvoi, 0x00, LG_MESSAGE*sizeof(char));
-		memset(messageRecu, 0x00, LG_MESSAGE*sizeof(char));
+		int nevents, i, j;
+		int nfds = 0;
 
-		printf("Attente d’une demande de connexion (quitter avec Ctrl-C)\n\n");
+		// Liste des sockets à écouter
+		pollfds[nfds].fd = socketEcoute;
+		pollfds[nfds].events = POLLIN;
+		pollfds[nfds].revents = 0;
 
-		// c’est un appel bloquant
-		socketDialogue = accept(socketEcoute, (struct sockaddr *)&pointDeRencontreDistant, & longueurAdresse);
+		nfds++;
 
-		if (socketDialogue < 0)
+		// Remplissage du tableau avec les infos (pollfs) des utilisateurs co
+		for (i = 0; i < MAX_USERS; i++)
 		{
-			perror("accept");
-			close(socketDialogue);
-			close(socketEcoute);
-			exit(-4);
+			if (users[i].socket != 0)
+			{
+				pollfds[nfds].fd = users[i].socket;
+				pollfds[nfds].events = POLLIN;
+				pollfds[nfds].revents = 0;
+
+				nfds++;
+			}
 		}
 
-		// On réceptionne les données du client
-		lus = read(socketDialogue, messageRecu, LG_MESSAGE*sizeof(char));
-		// ici appel bloquant
+		/* Structure Pollfd pour information uniquement
+		struct pollfd {
+			int fd; // File Descriptor
+			short events; // Requested Events
+			short revents; // Returned Events
+		}; */
 
-		switch(lus)
+		// Demander à poll s'il a vu des évènements
+		nevents = poll(pollfds, nfds, -1);
+
+		// Si poll a vu des évènements
+		if (nevents > 0)
 		{
-			case -1 : // une erreur !
-				perror("read");
-				close(socketDialogue);
-				exit(-5);
-			case 0 : // la socket est fermée
-				fprintf(stderr, "La socket a été fermée par le client !\n\n");
-				close(socketDialogue);
-				return 0;
-			default: // réception de n octets
-				printf("Message reçu : %s (%d octets)\n\n", messageRecu, lus);
+			for (i = 0; i < nfds; i++)
+			{
+				if (pollfds[i].revents != 0)
+				{
+					// S'il s'agit d'un évènement de la socket d'écoute (= nouvel utilisateur)
+					if (pollfds[i].fd == socketEcoute)
+					{
+						socketDialogue = accept(socketEcoute, (struct sockaddr *)&pointDeRencontreDistant, &longueurAdresse);
+
+						if (socketDialogue < 0)
+						{
+							perror("accept");
+							exit(-4);
+						}
+
+						// Ajout de l'utilisateur
+						for (j = 0; j < MAX_USERS; j++)
+						{
+							// S'il y a une place de libre dans le tableau des utilisateurs connectés, on ajoute le nouvel utilisateur au tableau
+							if (users[j].socket == 0)
+							{
+								users[j].socket = socketDialogue;
+
+								snprintf(users[j].login, MAX_LOGIN_SIZE, "anonymous%d", socketDialogue);
+								printf("Ajout de l'utilisateur %s en position %d\n", users[j].login, j);
+								
+								break;
+							}
+
+							// Si aucune place n'a été trouvée
+							if (j == MAX_USERS)
+							{
+								printf("Plus de place de disponible pour ce nouvel utilisateur\n");
+								close(socketDialogue);
+							}
+						}
+					}
+					
+					// Sinon, il s'agit d'un évènement d'un utilisateur (message, commande, etc)
+					else
+					{
+						// On cherche quel utilisateur a fait la demande grâce à sa socket
+						for (j = 0; j < MAX_USERS; j++)
+						{
+							if (users[j].socket == pollfds[i].fd)
+							{
+								break;
+							}
+						}
+
+						// Si aucun utilisateur n'a été trouvé
+						if (j == MAX_USERS)
+						{
+							printf("Utilisateur inconnu\n");
+							break;
+						}
+						
+						// On réceptionne les données du client
+						lus = read(pollfds[i].fd, messageRecu, LG_MESSAGE*sizeof(char));
+
+						switch (lus)
+						{
+							case -1 : /* Une erreur */
+								perror("read");
+								exit(-5);
+
+							case 0 : /* La socket est fermée */
+								printf("L'utilisateur %s en position %d a quitté le tchat\n", users[j].login, j);
+								memset(&users[j], '\0', sizeof(struct user));
+
+							default: /* Réception de n octets */
+								printf("Message reçu de %s : %s (%d octets)\n\n", users[j].login, messageRecu, lus);
+								
+								//dissect protocole msg(users, pollfds[i].fd, messageRecu);
+								//memset(messageRecu, '\0', LG_MESSAGE*sizeof(char));
+						}
+					}
+				}
+			}
+			
 		}
 
-		// On envoie des données vers le client
-		sprintf(messageEnvoi, "ok\n");
-		ecrits = write(socketDialogue, messageEnvoi, strlen(messageEnvoi));
-		
-		switch(ecrits)
+		else
 		{
-			case -1 : // une erreur !
-				perror("write");
-				close(socketDialogue);
-				exit(-6);
-			case 0 : // la socket est fermée
-				fprintf(stderr, "La socket a été fermée par le client !\n\n");
-				close(socketDialogue);
-			return 0;
-			default: /* envoi de n octets */
-				printf("Message %s envoyé (%d octets)\n\n", messageEnvoi, ecrits);
+			printf("poll() a renvoyé %d\n", nevents);
 		}
-
-		// On ferme la socket de dialogue et on se replace en attente...
-		close(socketDialogue);
 	}
 
 	// On ferme la ressource avant de quitter
 	close(socketEcoute);
+	
 	return 0;
 }
 
