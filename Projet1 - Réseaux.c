@@ -1,8 +1,6 @@
 #include <stdio.h> // Pour printf()
 #include <stdlib.h> // Pour exit()
-#include <unistd.h> // Pour close() et sleep()
 #include <string.h> // Pour memset()
-#include <poll.h> // Pour poll()
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <string.h> // pour memset
@@ -15,7 +13,6 @@
 #define LG_MESSAGE 256
 #define LG_LOGIN 50
 #define MAX_USERS 10
-#define MAX_LOGIN_SIZE 50
 
 void motClient();
 
@@ -151,7 +148,7 @@ int main(int argc, char const *argv[])
 							{
 								users[j].socket = socketDialogue;
 
-								snprintf(users[j].login, MAX_LOGIN_SIZE, "anonymous%d", socketDialogue);
+								snprintf(users[j].login, LG_LOGIN, "anonymous%d", socketDialogue);
 								printf("Ajout de l'utilisateur %s en position %d\n", users[j].login, j);
 								
 								break;
