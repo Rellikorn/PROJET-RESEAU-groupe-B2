@@ -16,12 +16,12 @@
 
 void motClient();
 
-typedef struct pollfd
+/*typedef struct pollfd
 {
 	int fd; // file descriptor
 	short event; // requested events
 	short revents // returned events
-}pollfd;
+}pollfd;*/
 
 typedef struct User
 {
@@ -39,7 +39,7 @@ int main(int argc, char const *argv[])
 	char messageEnvoi[LG_MESSAGE]; // le message de la couche Application !
 	char messageRecu[LG_MESSAGE]; // le message de la couche Application !
 	User users[MAX_USERS];
-	pollfd pollfds[MAX_USERS + 1];
+	struct pollfd pollfds[MAX_USERS + 1];
 	int ecrits, lus; // nb d’octets ecrits et lus
 	int retour;
 
@@ -102,9 +102,9 @@ int main(int argc, char const *argv[])
 		// Remplissage du tableau avec les infos (pollfs) des utilisateurs co
 		for (i = 0; i < MAX_USERS; i++)
 		{
-			if (users[i].socket != 0)
+			if (users[i].socketclient != 0) // J'ai changé socket en socketclient
 			{
-				pollfds[nfds].fd = users[i].socket;
+				pollfds[nfds].fd = users[i].socketclient; // J'ai changé socket en socketclient
 				pollfds[nfds].events = POLLIN;
 				pollfds[nfds].revents = 0;
 
@@ -144,9 +144,9 @@ int main(int argc, char const *argv[])
 						for (j = 0; j < MAX_USERS; j++)
 						{
 							// S'il y a une place de libre dans le tableau des utilisateurs connectés, on ajoute le nouvel utilisateur au tableau
-							if (users[j].socket == 0)
+							if (users[j].socketclient == 0) // J'ai changé socket en socketclient
 							{
-								users[j].socket = socketDialogue;
+								users[j].socketclient = socketDialogue; // J'ai changé socket en socketclient
 
 								snprintf(users[j].login, LG_LOGIN, "anonymous%d", socketDialogue);
 								printf("Ajout de l'utilisateur %s en position %d\n", users[j].login, j);
@@ -169,7 +169,7 @@ int main(int argc, char const *argv[])
 						// On cherche quel utilisateur a fait la demande grâce à sa socket
 						for (j = 0; j < MAX_USERS; j++)
 						{
-							if (users[j].socket == pollfds[i].fd)
+							if (users[j].socketclient == pollfds[i].fd) // J'ai changé socket en socketclient
 							{
 								break;
 							}
@@ -193,7 +193,7 @@ int main(int argc, char const *argv[])
 
 							case 0 : /* La socket est fermée */
 								printf("L'utilisateur %s en position %d a quitté le tchat\n", users[j].login, j);
-								memset(&users[j], '\0', sizeof(struct user));
+								memset(&users[j], '\0', sizeof(struct User));
 
 							default: /* Réception de n octets */
 								printf("Message reçu de %s : %s (%d octets)\n\n", users[j].login, messageRecu, lus);
@@ -219,15 +219,17 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
-void motClient()
+/*void motClient()
 {
+	char mot[10];
+	scanf("%s", mot);
 	if (mot == "!login") // à finir
 	{
 		printf("Ancien login : %s\n", User.login);
 		printf("Nouveau login : ");
-		scanf("%s%*[&]\n\n", &User.login);
+		scanf("%s\n\n", User.login); // scanf("%s%*[&]\n\n", &User.login);
 
-		printf("Bonjour %s\n", );
+		printf("Bonjour\n");
 
 		systeme("clear");
 	}
@@ -247,7 +249,7 @@ void motClient()
 
 	else if (mot == "!list")
 	{
-		printf("%s\n", );
+		printf("\n");
 	}
 
 	else if (mot == "!msg")
@@ -261,5 +263,5 @@ void motClient()
 	}
 
 	else
-		exit();
-}
+		exit(5);
+}*/
