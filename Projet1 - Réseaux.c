@@ -14,6 +14,7 @@
 #define LG_LOGIN 50
 #define MAX_USERS 10
 
+
 void motClient();
 
 /*typedef struct pollfd
@@ -32,16 +33,17 @@ typedef struct User
 int main(int argc, char const *argv[])
 {
 	int socketEcoute;
+	int /*ecrits,*/ lus; // nb d’octets ecrits et lus
+	//int retour;
+	int socketDialogue;
 	struct sockaddr_in pointDeRencontreLocal;
 	socklen_t longueurAdresse;
-	int socketDialogue;
 	struct sockaddr_in pointDeRencontreDistant;
-	char messageEnvoi[LG_MESSAGE]; // le message de la couche Application !
+	struct pollfd pollfds[MAX_USERS + 1];
+	//char messageEnvoi[LG_MESSAGE]; // le message de la couche Application !
 	char messageRecu[LG_MESSAGE]; // le message de la couche Application !
 	User users[MAX_USERS];
-	struct pollfd pollfds[MAX_USERS + 1];
-	int ecrits, lus; // nb d’octets ecrits et lus
-	int retour;
+	
 
 	memset(users, '\0', MAX_USERS*sizeof(User));
 
@@ -197,7 +199,7 @@ int main(int argc, char const *argv[])
 
 							default: /* Réception de n octets */
 								printf("Message reçu de %s : %s (%d octets)\n\n", users[j].login, messageRecu, lus);
-								
+								motClient(pollfds[i].fd,messageRecu);
 								//dissect protocole msg(users, pollfds[i].fd, messageRecu);
 								//memset(messageRecu, '\0', LG_MESSAGE*sizeof(char));
 						}
@@ -219,49 +221,38 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
-/*void motClient()
+void init(char *commande) {
+	memset(commande,0,50);
+}
+
+void motClient(int socketclient, char*commande)
 {
-	char mot[10];
-	scanf("%s", mot);
-	if (mot == "!login") // à finir
+	if (strncmp(commande,"!login",6)==0)
 	{
-		printf("Ancien login : %s\n", User.login);
-		printf("Nouveau login : ");
-		scanf("%s\n\n", User.login); // scanf("%s%*[&]\n\n", &User.login);
-
-		printf("Bonjour\n");
-
-		systeme("clear");
+		
 	}
-
-	else if (mot == "!help")
+	else if (strncmp(commande,"!help",5)==0)
 	{
-		printf("Liste des fonctions :\n");
-		printf("  -  !login   ->   modifier son login\n");
-		printf("  -  !help    ->   liste des actions possibles\n");
-		printf("  -  !ping    ->   pinguer le serveur\n");
-		printf("  -  !list    ->   liste les logins\n");
-		printf("  -  !msg     ->   envoyer un message\n");
-		printf("  -  !serveur ->   affiche l'IP du serveur\n");
-		printf("  -  !port    ->   affiche le port du serveur\n");
-		printf("  -  !exit    ->   déconnexion\n");
+		dprintf(socketclient,"Liste des fonctions :\n");
+		dprintf(socketclient,"  -  !login   ->   modifier son login\n");
+		dprintf(socketclient,"  -  !help    ->   liste des actions possibles\n");
+		dprintf(socketclient,"  -  !ping    ->   pinguer le serveur\n");
+		dprintf(socketclient,"  -  !list    ->   liste les logins\n");
+		dprintf(socketclient,"  -  !msg     ->   envoyer un message\n");
+		dprintf(socketclient,"  -  !serveur ->   affiche l'IP du serveur\n");
+		dprintf(socketclient,"  -  !port    ->   affiche le port du serveur\n");
+		dprintf(socketclient,"  -  !exit    ->   déconnexion\n");
 	}
-
-	else if (mot == "!list")
+	else if (strncmp(commande,"!list",5)==0)
 	{
-		printf("\n");
+		printf("liste\n");
 	}
-
-	else if (mot == "!msg")
+	else if (strncmp(commande,"!msg",4)==0)
 	{
-		char message[LG_MESSAGE];
-
-		printf("Entrez votre message :\n");
-		scanf("%s", &message);
-
-		ssize_t sendmsg(socketDialogue, message, MSG_OOB);
+		//char message[LG_MESSAGE];
+		//sendmsg(socketDialogue, message,MSG_OOB);
 	}
-
-	else
+	else{
 		exit(5);
-}*/
+	}
+}
