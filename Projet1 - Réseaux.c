@@ -3,7 +3,6 @@
 #include <string.h> // Pour memset()
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <string.h> // pour memset
 #include <netinet/in.h> // pour struct sockaddr_in
 #include <arpa/inet.h> // pour htons et inet_aton
 #include <unistd.h> // pour sleep
