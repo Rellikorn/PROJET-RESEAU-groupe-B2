@@ -28,19 +28,38 @@ typedef struct User
 	int socketclient;
 	char login[LG_LOGIN];
 }User;
- 
+
+/*	Structure du code
+
+Client :		Serveur :
+				socket()
+				bind()
+socket()		listen()
+connet()	-->	accept()
+write()		-->	read()
+read()		<--	write()
+close()			close()
+
+*/
+
+
 int main(int argc, char const *argv[])
 {
 	int socketEcoute;
 	int /*ecrits,*/ lus; // nb d’octets ecrits et lus
 	//int retour;
 	int socketDialogue;
+	
 	struct sockaddr_in pointDeRencontreLocal;
+	
 	socklen_t longueurAdresse;
+	
 	struct sockaddr_in pointDeRencontreDistant;
 	struct pollfd pollfds[MAX_USERS + 1];
-	//char messageEnvoi[LG_MESSAGE]; // le message de la couche Application !
-	char messageRecu[LG_MESSAGE]; // le message de la couche Application !
+	//char messageEnvoi[LG_MESSAGE]; // le message de la couche Application
+	
+	char messageRecu[LG_MESSAGE]; // le message de la couche Application
+	
 	User users[MAX_USERS];
 	
 
