@@ -12,22 +12,32 @@
 #define LG_MESSAGE 256
 #define LG_LOGIN 50
 #define MAX_USERS 10
+int temp;
 
-
-void motClient();
-
-/*typedef struct pollfd
-{
-	int fd; // file descriptor
-	short event; // requested events
-	short revents // returned events
-}pollfd;*/
+void Client(char*);
 
 typedef struct User
 {
 	int socketclient;
 	char login[LG_LOGIN];
 }User;
+
+int socketEcoute;
+	int /*ecrits,*/ lus; // nb d’octets ecrits et lus
+	//int retour;
+	int socketDialogue;
+	
+	struct sockaddr_in pointDeRencontreLocal;
+	
+	socklen_t longueurAdresse;
+	
+	struct sockaddr_in pointDeRencontreDistant;
+	struct pollfd pollfds[MAX_USERS + 1];
+	char messageEnvoi[LG_MESSAGE]; // le message de la couche Application
+	
+	char messageRecu[LG_MESSAGE]; // le message de la couche Application
+	
+	User users[MAX_USERS];
 
 /*	Structure du code
 
@@ -45,22 +55,7 @@ close()			close()
 
 int main(int argc, char const *argv[])
 {
-	int socketEcoute;
-	int /*ecrits,*/ lus; // nb d’octets ecrits et lus
-	//int retour;
-	int socketDialogue;
 	
-	struct sockaddr_in pointDeRencontreLocal;
-	
-	socklen_t longueurAdresse;
-	
-	struct sockaddr_in pointDeRencontreDistant;
-	struct pollfd pollfds[MAX_USERS + 1];
-	//char messageEnvoi[LG_MESSAGE]; // le message de la couche Application
-	
-	char messageRecu[LG_MESSAGE]; // le message de la couche Application
-	
-	User users[MAX_USERS];
 	
 
 	memset(users, '\0', MAX_USERS*sizeof(User));
@@ -191,6 +186,7 @@ int main(int argc, char const *argv[])
 						{
 							if (users[j].socketclient == pollfds[i].fd) // J'ai changé socket en socketclient
 							{
+								temp = j;
 								break;
 							}
 						}
@@ -217,7 +213,7 @@ int main(int argc, char const *argv[])
 
 							default: /* Réception de n octets */
 								printf("Message reçu de %s : %s (%d octets)\n\n", users[j].login, messageRecu, lus);
-								motClient(pollfds[i].fd,messageRecu);
+								Client(messageRecu);
 								//dissect protocole msg(users, pollfds[i].fd, messageRecu);
 								//memset(messageRecu, '\0', LG_MESSAGE*sizeof(char));
 						}
