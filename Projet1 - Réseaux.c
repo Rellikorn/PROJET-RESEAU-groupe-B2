@@ -239,10 +239,6 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
-void init(char *commande) {
-	memset(commande,0,50);
-}
-
 void Client(char *messageRecu)
 {
 	
@@ -250,46 +246,39 @@ void Client(char *messageRecu)
 	{
 		char templogin[50];
 		
-		
-		dprintf(users[temp].socketclient, "Ancien login : %s\n",users[temp].login);
-		dprintf(users[temp].socketclient, "*-----------------------------------*\n");	
+		dprintf(users[temp].socketclient, "Ancien login : %s\n",users[temp].login);	
 		strcpy(templogin,users[temp].login);
 		sscanf(messageRecu, "<login> %s", users[temp].login);
-		for(int i=0; i<MAX_USERS;i++){	
-			if(strcmp(users[temp].login,users[i].login)==0){
+		
+		for (int i=0; i<MAX_USERS;i++)
+		{	
+			if (strcmp(users[temp].login, users[i].login) == 0)
+			{
 				dprintf(users[temp].socketclient,"Veuillez choisir un autre login, celui la étant déja prit ");	
 			}
 		}
 		
-		
 		dprintf(users[temp].socketclient, "Nouveau login : %s\n", users[temp].login);
-		dprintf(users[temp].socketclient, "*-----------------------------------*\n");
 		printf("%s s'est renommé : %s\n", templogin, users[temp].login);
-
-	}
-	
-	else if (strncmp("<version>",messageRecu,9) == 0)
-	{
-		
-		dprintf(users[temp].socketclient, "<version 1.1> \n");
 
 	}
 
 	else if (strncmp("<help>",messageRecu,6) == 0)
 	{
-		dprintf(users[temp].socketclient, "*-----------------------------------*\n");
+		dprintf(users[temp].socketclient, "\n");
 		dprintf(users[temp].socketclient, "Liste des fonctions :\n");
 		dprintf(users[temp].socketclient, "  -  <login>   :   modifier son login\n");
 		dprintf(users[temp].socketclient, "  -  <list>    :   liste les logins\n");
-		dprintf(users[temp].socketclient, "  -  <msg>    :   envoyer un message\n");
-		dprintf(users[temp].socketclient, "  -  ctrl+c  :  déconnexion\n");
-		dprintf(users[temp].socketclient, "*-----------------------------------*\n");
+		dprintf(users[temp].socketclient, "  -  <msg>     :   envoyer un message\n");
+		dprintf(users[temp].socketclient, "  -  ctrl+c    :   déconnexion\n");
+		dprintf(users[temp].socketclient, "\n");
 	}
 
 	else if (strncmp("<list>",messageRecu,6) == 0)
 	{
-		for(int i = 0; i<MAX_USERS; i++){
-			dprintf(users[temp].socketclient,"%s \n",users[i].login);
+		for(int i = 0; i<MAX_USERS; i++)
+		{
+			dprintf(users[temp].socketclient, "%s \n", users[i].login);
 		}
 	}
 
@@ -303,20 +292,17 @@ void Client(char *messageRecu)
 		sscanf(messageRecu, "<msg> %s %s %[\001-\377] \n", users[temp].login,templogin2,tempmsg); //combinaison chelou pour scanner jusqu'a la fin de la mémoire !
 		dprintf(users[temp].socketclient,"%s \n",tempmsg);
 		
-		for(int i = 0; i<MAX_USERS; i++){
-			if(strcmp(templogin2,users[i].login)==0){
+		for(int i = 0; i<MAX_USERS; i++)
+		{
+			if(strcmp(templogin2,users[i].login)==0)
+			{
 				dprintf(users[i].socketclient,"Vous avez un message de %s : %s \n",users[temp].login,tempmsg);
 			}
 		}
 	}
-	else if(strncmp("<exit>",messageRecu,6) == 0){
-
-		
-	}
 	
 	else{
 		printf("Error\n");
-		dprintf(users[temp].socketclient, "*-----------------------------------*\n");
 		dprintf(users[temp].socketclient, "<help> pour avoir les fonctions !\n");
 	}
 }
